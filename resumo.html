@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Resumo de Revisão — Arquivo Imperial</title>
+<style>
+  :root{
+    --bg:#0e2418; --bg2:#12321f; --panel:rgba(24,58,40,.62);
+    --gold:#c9a24a; --gold2:#e6cd86; --cream:#f2e8d0; --ink:#e9e0c8;
+    --wax:#9b2d2d; --green:#5fbf7a; --amber:#e0a13a; --yellow:#f0d886;
+    --grid:rgba(201,162,74,.09);
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; font-family:'Segoe UI',system-ui,sans-serif; color:var(--ink);
+    background:
+      linear-gradient(var(--grid) 1px,transparent 1px),
+      linear-gradient(90deg,var(--grid) 1px,transparent 1px),
+      radial-gradient(circle at 25% 8%,#173d28,#0e2418 72%);
+    background-size:34px 34px,34px 34px,100% 100%;
+    line-height:1.65;
+  }
+  .wrap{max-width:960px;margin:0 auto;padding:24px 18px 80px}
+  header.top{border:2px solid var(--gold);border-radius:14px;padding:26px 24px;background:var(--panel);position:relative;overflow:hidden}
+  header.top::before{content:"ARQUIVO IMPERIAL · CADERNO DE RESTAURO";position:absolute;top:10px;right:16px;font-size:11px;letter-spacing:2px;color:var(--gold);opacity:.75;font-family:'Courier New',monospace}
+  h1{margin:0 0 6px;font-size:1.9rem;color:#fff;letter-spacing:.5px}
+  h1 .sub{display:block;font-size:.95rem;color:var(--gold2);font-weight:normal;letter-spacing:1px;margin-top:4px}
+  .tagline{color:var(--cream);opacity:.9;margin:8px 0 0}
+  .blueprint-tag{font-family:'Courier New',monospace;color:var(--gold);font-size:.85rem}
+  nav.tabs{display:flex;flex-wrap:wrap;gap:10px;margin:22px 0 10px}
+  nav.tabs a{text-decoration:none;color:var(--ink);border:1px solid rgba(201,162,74,.4);padding:8px 14px;border-radius:10px;font-size:.9rem;background:rgba(24,58,40,.5);transition:.15s}
+  nav.tabs a:hover{border-color:var(--gold);color:#fff;background:rgba(201,162,74,.14)}
+  nav.tabs a.here{border-color:var(--gold2);color:var(--gold2)}
+  .savebar{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:14px 0 0;font-size:.82rem;color:var(--gold2)}
+  .savebar button{background:rgba(24,58,40,.7);color:var(--ink);border:1px solid rgba(201,162,74,.4);border-radius:8px;padding:6px 10px;cursor:pointer;font-size:.82rem}
+  .savebar button:hover{border-color:var(--gold);color:#fff}
+  h2{color:#fff;font-size:1.3rem;margin:36px 0 6px}
+  .ficha{background:var(--panel);border:1px solid rgba(201,162,74,.3);border-radius:14px;padding:20px 22px;margin:18px 0}
+  .ficha.pri{border-left:6px solid var(--wax)}
+  .ficha.ref{border-left:6px solid var(--amber)}
+  .ficha.fine{border-left:6px solid var(--yellow)}
+  .selo{display:inline-block;font-size:.7rem;font-weight:bold;letter-spacing:1px;padding:3px 9px;border-radius:20px;margin-bottom:8px;font-family:'Courier New',monospace}
+  .selo.r{background:var(--wax);color:#ffe0e0}
+  .selo.a{background:var(--amber);color:#3a2400}
+  .selo.y{background:var(--yellow);color:#3a3000}
+  .ficha h3{margin:4px 0 10px;color:#fff;font-size:1.2rem}
+  .ficha p{margin:8px 0}
+  b.hl{color:var(--gold2)}
+  .postit{background:#f0d886;color:#4a3a00;border-radius:6px;padding:12px 14px;margin:12px 0;font-size:.92rem;box-shadow:2px 3px 8px rgba(0,0,0,.35);transform:rotate(-.4deg)}
+  .postit b{color:#7a5c00}
+  .alerta{background:rgba(155,45,45,.14);border:1px solid var(--wax);border-radius:8px;padding:12px 14px;margin:12px 0;font-size:.92rem}
+  .alerta b{color:#e59a9a}
+  .exbox{background:rgba(0,0,0,.22);border-left:3px solid var(--gold);padding:10px 14px;border-radius:0 8px 8px 0;margin:10px 0;font-size:.93rem}
+  .exbox .frase{font-style:italic;color:var(--cream)}
+  table{width:100%;border-collapse:collapse;margin:12px 0;font-size:.9rem}
+  th,td{text-align:left;padding:9px 10px;border-bottom:1px solid rgba(201,162,74,.2);vertical-align:top}
+  th{color:var(--gold2);font-size:.78rem;text-transform:uppercase;letter-spacing:1px}
+  /* linha do tempo */
+  .timeline{position:relative;margin:18px 0 8px;padding-left:24px;border-left:3px solid var(--gold)}
+  .tl{position:relative;margin:0 0 16px}
+  .tl::before{content:"";position:absolute;left:-31px;top:3px;width:12px;height:12px;border-radius:50%;background:var(--gold2);border:2px solid var(--bg)}
+  .tl .ano{font-family:'Courier New',monospace;font-weight:bold;color:var(--gold2)}
+  .tl .fato{color:var(--cream)}
+  /* flip cards */
+  .flipgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin:14px 0}
+  .flip{background:transparent;perspective:1000px;height:170px;cursor:pointer}
+  .flip-in{position:relative;width:100%;height:100%;transition:transform .5s;transform-style:preserve-3d}
+  .flip.on .flip-in{transform:rotateY(180deg)}
+  .flip-f,.flip-b{position:absolute;inset:0;backface-visibility:hidden;border-radius:12px;padding:14px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center}
+  .flip-f{background:rgba(24,58,40,.9);border:1px solid var(--gold);color:#fff}
+  .flip-f .frase{font-size:1rem;font-weight:bold}
+  .flip-f .tap{position:absolute;bottom:8px;font-size:.7rem;color:var(--gold2);opacity:.85}
+  .flip-b{background:rgba(201,162,74,.16);border:1px solid var(--gold2);color:var(--cream);transform:rotateY(180deg);font-size:.9rem}
+  .rev{margin-top:12px}
+  .rev label{display:flex;align-items:center;gap:8px;font-size:.9rem;color:var(--green);cursor:pointer}
+  .footer{margin-top:40px;text-align:center;font-size:.82rem;color:var(--gold);opacity:.75;font-family:'Courier New',monospace}
+  ul{margin:8px 0 8px 0;padding-left:22px} li{margin:5px 0}
+  .glos dt{color:var(--gold2);font-weight:bold;margin-top:8px}
+  .glos dd{margin:2px 0 0 0}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <h1>Resumo de Revisão
+      <span class="sub">🏛️ ARQUIVO IMPERIAL · Kit de Recuperação de História</span>
+    </h1>
+    <p class="tagline">Cada tema é um documento do Império a ser restaurado. Aqui estão as fichas para revisar — com foco no que caiu nas provas.</p>
+    <p class="blueprint-tag">// História (Independência e Primeiro Reinado) · 8º ano · Colégio São José</p>
+    <div class="savebar">
+      <span id="savestatus">💾 salvamento automático ligado</span>
+      <button onclick="doExport()">📥 Exportar</button>
+      <button onclick="doImport()">📤 Importar</button>
+      <button onclick="doReset()">🗑️ Zerar</button>
+    </div>
+  </header>
+
+  <nav class="tabs">
+    <a href="index.html">🏛️ Início</a>
+    <a href="diagnostico.html">🔎 Diagnóstico</a>
+    <a href="resumo.html" class="here">📜 Resumo de Revisão</a>
+    <a href="simulado.html">✒️ Simulado</a>
+  </nav>
+
+  <h2>🔧 Como usar este caderno</h2>
+  <div class="ficha">
+    <p>Leia as fichas na ordem — as primeiras (borda <b style="color:var(--wax)">vermelha</b>) são as que mais precisam de reforço. Clique nas <b>cartas</b> para virar. No fim de cada ficha, marque <b>"✔ revisei"</b> quando entender. Depois vá para o <b>✒️ Simulado</b>.</p>
+  </div>
+
+  <!-- FICHA 1: VINDA DA CORTE (PRIORIDADE) -->
+  <div class="ficha pri" data-ficha="corte">
+    <span class="selo r">PRIORIDADE MÁXIMA</span>
+    <h3>1. Vinda da corte portuguesa (1808) — por que veio e o que mudou</h3>
+    <p><b class="hl">Por que veio?</b> Napoleão dominava a Europa e criou o <b>Bloqueio Continental</b> (proibiu os países de comerciar com a Inglaterra). Portugal era <b>aliado da Inglaterra</b> e não obedeceu. Como punição, as tropas de Napoleão <b>invadiram Portugal</b> em 1807. Para não ser presa, a <b>família real fugiu para o Brasil</b>, protegida por navios ingleses, e chegou em <b>1808</b>.</p>
+
+    <div class="alerta"><b>⚠️ Pegadinha que você já errou:</b> a corte <u>não</u> veio "para cuidar da produção de café, ouro e açúcar". Ela veio <b>fugindo de Napoleão</b>. A economia só mudou <b>depois</b>, como consequência da chegada da corte.</div>
+
+    <p><b class="hl">O que mudou (economia)?</b> A mudança mais importante foi a <b>Abertura dos Portos às Nações Amigas</b> (1808): acabou o monopólio de Portugal (o "exclusivo colonial") e o Brasil pôde comerciar direto com outros países — quem mais lucrou foi a <b>Inglaterra</b>.</p>
+
+    <div class="timeline">
+      <div class="tl"><span class="ano">1807</span> — <span class="fato">Napoleão invade Portugal (Bloqueio Continental).</span></div>
+      <div class="tl"><span class="ano">1808</span> — <span class="fato">Chegada da corte + <b>Abertura dos Portos</b>. Criação do Banco do Brasil e da Imprensa Régia.</span></div>
+      <div class="tl"><span class="ano">1810</span> — <span class="fato"><b>Tratado de Comércio e Navegação</b> (vantagens para a Inglaterra).</span></div>
+      <div class="tl"><span class="ano">1815</span> — <span class="fato">Brasil vira <b>Reino Unido</b> a Portugal e Algarves.</span></div>
+      <div class="tl"><span class="ano">1821</span> — <span class="fato">D. João VI volta a Portugal; D. Pedro fica como regente.</span></div>
+    </div>
+
+    <div class="postit"><b>📌 Cai na prova:</b> "motivo da vinda = fugir de Napoleão"; "principal mudança econômica = abertura dos portos (1808)".</div>
+    <div class="rev"><label><input type="checkbox" data-rev="corte"> ✔ revisei esta ficha</label></div>
+  </div>
+
+  <!-- FICHA 2: AS REVOLTAS FORAM DERROTADAS (PRIORIDADE) -->
+  <div class="ficha pri" data-ficha="revoltas">
+    <span class="selo r">PRIORIDADE MÁXIMA</span>
+    <h3>2. As revoltas coloniais foram DERROTADAS (não venceram)</h3>
+    <p>Um erro que se repete: achar que a revolta "venceu". Cuidado — <b>as duas revoltas abaixo fracassaram</b>. Quem conseguiu a separação de verdade foi só o Brasil, em 1822.</p>
+
+    <div class="flipgrid">
+      <div class="flip" onclick="this.classList.toggle('on')"><div class="flip-in">
+        <div class="flip-f"><div class="frase">Conjuração Mineira (1789)</div><div class="tap">clique para virar</div></div>
+        <div class="flip-b"><b>Causas:</b> aumento da fiscalização e da <b>derrama</b>, ideias iluministas, exemplo dos EUA. <b>Quem:</b> elite mineradora, intelectuais, clero e militares (sem povo). <b>Fim:</b> <b>traída/descoberta</b> antes de estourar; Tiradentes <b>enforcado</b>.</div>
+      </div></div>
+      <div class="flip" onclick="this.classList.toggle('on')"><div class="flip-in">
+        <div class="flip-f"><div class="frase">Revolução Pernambucana (1817)</div><div class="tap">clique para virar</div></div>
+        <div class="flip-b"><b>Causas:</b> altos impostos, crise do açúcar, ideias iluministas/republicanas. Chegou a formar governo provisório, mas foi <b>rapidamente derrotada pelas tropas portuguesas ainda em 1817</b>.</div>
+      </div></div>
+    </div>
+
+    <div class="alerta"><b>⚠️ Pegadinha que você já errou:</b> na prova você marcou que "Pernambuco tornou-se independente". <u>Errado</u>: a Revolução Pernambucana foi <b>derrotada em 1817</b>. Não houve independência.</div>
+
+    <p><b class="hl">Composição social (importante):</b> a Conjuração Mineira foi um movimento de <b>elite</b> — mineradores, intelectuais, padres e militares. <b>NÃO teve participação popular ampla</b>.</p>
+
+    <div class="postit"><b>📌 Cai na prova:</b> Conjuração = descoberta e reprimida (Tiradentes enforcado). Pernambucana 1817 = derrotada rápido. Nenhuma venceu.</div>
+    <div class="rev"><label><input type="checkbox" data-rev="revoltas"> ✔ revisei esta ficha</label></div>
+  </div>
+
+  <!-- FICHA 3: DISCURSIVAS -->
+  <div class="ficha ref" data-ficha="discursivas">
+    <span class="selo a">REFORÇAR</span>
+    <h3>3. Como escrever boas discursivas (respostas-modelo)</h3>
+    <p>Você sabe pedaços do assunto, mas a resposta fica curta. Truque: toda discursiva pede pelo menos <b>o que foi + quem participou + como terminou</b> (ou a consequência). Veja modelos das que caíram:</p>
+
+    <div class="exbox"><span class="frase">"Quais os motivos da vinda da corte (1808)?"</span><br>
+    A corte veio <b>fugindo da invasão de Napoleão</b>, que ameaçava Portugal por causa do Bloqueio Continental. Protegida por navios ingleses, a família real chegou ao Brasil em 1808. Uma mudança econômica foi a <b>Abertura dos Portos</b> (fim do monopólio de Portugal).</div>
+
+    <div class="exbox"><span class="frase">"O que foi a Guerra da Cisplatina?"</span><br>
+    Conflito (1825–1828) entre o <b>Império do Brasil</b> e as <b>Províncias Unidas do Rio da Prata (Argentina)</b> pela posse da Província Cisplatina. O Brasil foi derrotado e a região virou o <b>Uruguai</b> (1828). Foi cara e malsucedida, ajudando no <b>desgaste de D. Pedro I</b>.</div>
+
+    <div class="exbox"><span class="frase">"Objetivos da Revolução Liberal do Porto (1820)?"</span><br>
+    Os liberais portugueses queriam uma <b>monarquia constitucional</b> (limitar o rei com uma Constituição), o <b>retorno de D. João VI</b> a Portugal e a <b>recolonização do Brasil</b> (tirar a autonomia de 1808).</div>
+
+    <div class="exbox"><span class="frase">"Importância do reconhecimento externo da Independência?"</span><br>
+    Para firmar sua posição, o Brasil precisou ser reconhecido por outros países. Os <b>EUA</b> reconheceram primeiro (1824); depois vieram <b>Portugal</b> (com indenização, mediada pela <b>Inglaterra</b>). Sem reconhecimento, o país ficaria isolado e sob ameaça.</div>
+
+    <div class="postit"><b>📌 Dica de nota:</b> nas discursivas, sempre feche a resposta com a <b>consequência</b> — é o que a professora procura.</div>
+    <div class="rev"><label><input type="checkbox" data-rev="discursivas"> ✔ revisei esta ficha</label></div>
+  </div>
+
+  <!-- FICHA 4: DATAS E NÚMEROS -->
+  <div class="ficha ref" data-ficha="datas">
+    <span class="selo a">REFORÇAR</span>
+    <h3>4. Datas e números que caem</h3>
+    <table>
+      <tr><th>Ano/nº</th><th>O que é</th></tr>
+      <tr><td><b class="hl">1808</b></td><td>Chegada da corte + Abertura dos Portos.</td></tr>
+      <tr><td><b class="hl">1810</b></td><td>Tratado de Comércio e Navegação — outras nações pagavam <b>15%</b> de imposto.</td></tr>
+      <tr><td><b class="hl">1817</b></td><td>Revolução Pernambucana (derrotada no mesmo ano).</td></tr>
+      <tr><td><b class="hl">1820</b></td><td>Revolução Liberal do Porto.</td></tr>
+      <tr><td><b class="hl">1822</b></td><td>Dia do Fico (9/1) e Independência (7/9).</td></tr>
+      <tr><td><b class="hl">1824</b></td><td>Constituição outorgada + Confederação do Equador.</td></tr>
+      <tr><td><b class="hl">1825–28</b></td><td>Guerra da Cisplatina (nasce o Uruguai).</td></tr>
+      <tr><td><b class="hl">1831</b></td><td>Abdicação de D. Pedro I (7/4).</td></tr>
+    </table>
+    <div class="alerta"><b>⚠️ Você já errou:</b> no Tratado de 1810 marcou 12%. O valor pedido é <b>15%</b>.</div>
+    <div class="rev"><label><input type="checkbox" data-rev="datas"> ✔ revisei esta ficha</label></div>
+  </div>
+
+  <!-- FICHA 5: PRIMEIRO REINADO -->
+  <div class="ficha fine" data-ficha="reinado">
+    <span class="selo y">AJUSTE FINO</span>
+    <h3>5. Primeiro Reinado (1822–1831) — cartas de revisão</h3>
+    <p>Aqui você já vai bem na múltipla escolha. Vire as cartas para não esquecer:</p>
+    <div class="flipgrid">
+      <div class="flip" onclick="this.classList.toggle('on')"><div class="flip-in">
+        <div class="flip-f"><div class="frase">Constituição de 1824</div><div class="tap">virar</div></div>
+        <div class="flip-b"><b>Outorgada</b> (imposta) por D. Pedro I. Criou o <b>Poder Moderador</b> (só do imperador) → símbolo da <b>centralização</b>. Voto censitário.</div>
+      </div></div>
+      <div class="flip" onclick="this.classList.toggle('on')"><div class="flip-in">
+        <div class="flip-f"><div class="frase">Confederação do Equador (1824)</div><div class="tap">virar</div></div>
+        <div class="flip-b">Revolta no <b>Nordeste</b> contra a centralização e a Constituição outorgada. Queria uma <b>república federalista</b>. Foi derrotada.</div>
+      </div></div>
+      <div class="flip" onclick="this.classList.toggle('on')"><div class="flip-in">
+        <div class="flip-f"><div class="frase">Noite das Garrafadas (1831)</div><div class="tap">virar</div></div>
+        <div class="flip-b">Conflitos nas ruas do Rio entre <b>portugueses</b> (pró-D. Pedro I) e <b>brasileiros</b> opositores.</div>
+      </div></div>
+      <div class="flip" onclick="this.classList.toggle('on')"><div class="flip-in">
+        <div class="flip-f"><div class="frase">Líbero Badaró (1830)</div><div class="tap">virar</div></div>
+        <div class="flip-b">Jornalista crítico de D. Pedro I. Sua <b>morte</b> virou <b>símbolo da repressão</b> e enfraqueceu o imperador.</div>
+      </div></div>
+      <div class="flip" onclick="this.classList.toggle('on')"><div class="flip-in">
+        <div class="flip-f"><div class="frase">Abdicação (1831)</div><div class="tap">virar</div></div>
+        <div class="flip-b"><b>Fatores:</b> crise econômica, oposição crescente e desgaste da Guerra da Cisplatina. O apoio popular <b>caiu</b>. D. Pedro I abdicou em favor do filho.</div>
+      </div></div>
+    </div>
+    <div class="rev"><label><input type="checkbox" data-rev="reinado"> ✔ revisei esta ficha</label></div>
+  </div>
+
+  <!-- FICHA 6: TRUQUE DO INCORRETA -->
+  <div class="ficha fine" data-ficha="incorreta">
+    <span class="selo y">AJUSTE FINO</span>
+    <h3>6. Truque das questões "assinale a INCORRETA"</h3>
+    <p>Nessas questões, a resposta certa é a frase <b>FALSA</b>. É fácil se confundir e marcar uma verdadeira (foi o que aconteceu na Prova 2).</p>
+    <ul>
+      <li>Leia o comando de novo e <b>sublinhe a palavra INCORRETA</b>.</li>
+      <li>Marque um <b>V</b> ou <b>F</b> ao lado de cada alternativa.</li>
+      <li>A que sobrar com <b>F</b> é a resposta.</li>
+    </ul>
+    <div class="postit"><b>📌 Lembre:</b> "incorreta" = procure a mentira. "Correta" = procure a verdade.</div>
+    <div class="rev"><label><input type="checkbox" data-rev="incorreta"> ✔ revisei esta ficha</label></div>
+  </div>
+
+  <!-- GLOSSÁRIO -->
+  <div class="ficha">
+    <h3>📖 Glossário rápido</h3>
+    <dl class="glos">
+      <dt>Bloqueio Continental</dt><dd>Ordem de Napoleão proibindo os países europeus de comerciar com a Inglaterra.</dd>
+      <dt>Exclusivo (pacto) colonial</dt><dd>Regra que obrigava a colônia a comerciar só com a metrópole (Portugal). Acabou com a abertura dos portos.</dd>
+      <dt>Derrama</dt><dd>Cobrança forçada dos impostos atrasados sobre o ouro.</dd>
+      <dt>Outorgada</dt><dd>Constituição imposta pelo governante, sem votação popular (ex.: a de 1824).</dd>
+      <dt>Poder Moderador</dt><dd>Quarto poder criado em 1824, exclusivo do imperador — símbolo da centralização.</dd>
+      <dt>Recolonização</dt><dd>Tentativa de Portugal (após 1820) de tirar a autonomia do Brasil e voltar a tratá-lo como colônia.</dd>
+    </dl>
+  </div>
+
+  <div class="footer">// fim do caderno de restauro · agora teste tudo no ✒️ Simulado →</div>
+
+</div>
+
+<script>
+(function(){
+"use strict";
+var KEY="recup_hist8_resumo";
+var mem={rev:{}};
+function load(){try{var r=localStorage.getItem(KEY);if(r){var o=JSON.parse(r);if(o){mem=o;mem.rev=mem.rev||{};}}}catch(e){}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(mem));flash("💾 salvo "+new Date().toLocaleTimeString('pt-BR'));}catch(e){flash("💾 salvo (só nesta sessão)");}}
+function flash(t){var s=document.getElementById('savestatus');if(s)s.textContent=t;}
+load();
+// restaurar checkboxes
+document.querySelectorAll('input[data-rev]').forEach(function(cb){
+  var k=cb.getAttribute('data-rev');
+  if(mem.rev[k])cb.checked=true;
+  cb.addEventListener('change',function(){mem.rev[k]=cb.checked;save();});
+});
+window.doExport=function(){var blob=new Blob([JSON.stringify(mem,null,2)],{type:'application/json'});var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='resumo_recup_hist8.json';a.click();};
+window.doImport=function(){var inp=document.createElement('input');inp.type='file';inp.accept='.json';inp.onchange=function(e){var f=e.target.files[0];if(!f)return;var rd=new FileReader();rd.onload=function(ev){try{mem=JSON.parse(ev.target.result);save();location.reload();}catch(err){flash('arquivo inválido');}};rd.readAsText(f);};inp.click();};
+window.doReset=function(){mem={rev:{}};save();location.reload();};
+})();
+</script>
+</body>
+</html>
