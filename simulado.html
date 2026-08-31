@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Simulado de Recuperação — Arquivo Imperial</title>
+<style>
+  :root{
+    --bg:#0e2418; --bg2:#12321f; --panel:rgba(24,58,40,.62);
+    --gold:#c9a24a; --gold2:#e6cd86; --cream:#f2e8d0; --ink:#e9e0c8;
+    --wax:#9b2d2d; --green:#5fbf7a; --amber:#e0a13a; --yellow:#f0d886;
+    --grid:rgba(201,162,74,.09);
+    --provgreen:#1d5c3a; --provred:#9b2d2d;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; font-family:'Segoe UI',system-ui,sans-serif; color:var(--ink);
+    background:
+      linear-gradient(var(--grid) 1px,transparent 1px),
+      linear-gradient(90deg,var(--grid) 1px,transparent 1px),
+      radial-gradient(circle at 20% 8%,#173d28,#0e2418 72%);
+    background-size:34px 34px,34px 34px,100% 100%;
+    line-height:1.6;
+  }
+  .wrap{max-width:920px;margin:0 auto;padding:24px 16px 90px}
+  nav.tabs{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 18px}
+  nav.tabs a{text-decoration:none;color:var(--ink);border:1px solid rgba(201,162,74,.4);padding:8px 14px;border-radius:10px;font-size:.9rem;background:rgba(24,58,40,.5);transition:.15s}
+  nav.tabs a:hover{border-color:var(--gold);color:#fff;background:rgba(201,162,74,.14)}
+  nav.tabs a.here{border-color:var(--gold2);color:var(--gold2)}
+
+  /* Cabeçalho estilo prova São José */
+  .prova-header{background:#fff;color:#1a1a1a;border-radius:10px;overflow:hidden;border:2px solid var(--gold);margin-bottom:14px}
+  .ph-top{display:flex;align-items:center;gap:14px;padding:12px 16px;border-bottom:2px solid #1a1a1a;flex-wrap:wrap}
+  .ph-logo{font-family:Georgia,serif;line-height:1}
+  .ph-logo .sj{font-size:1.4rem;font-weight:bold;color:var(--provgreen)}
+  .ph-logo .cl{font-size:.62rem;letter-spacing:1px;color:#555}
+  .ph-rede{flex:1;min-width:150px;font-family:Georgia,serif}
+  .ph-rede b{color:var(--provgreen);font-size:1.05rem}
+  .ph-rede small{display:block;color:#555;font-size:.72rem;line-height:1.3}
+  .ph-anos{font-family:Georgia,serif;font-weight:bold;color:var(--provgreen);font-size:1.1rem;text-align:center}
+  .ph-anos small{display:block;font-size:.6rem;color:#888;letter-spacing:2px}
+  .ph-grid{display:grid;grid-template-columns:1fr 1fr;font-size:.82rem}
+  .ph-grid div{border:1px solid #ccc;padding:6px 10px}
+  .ph-title{text-align:center;font-family:Georgia,serif;font-weight:bold;font-size:1.05rem;color:var(--provgreen);padding:8px;background:#eef5ee;border-top:1px solid #ccc}
+  .ph-orient{font-size:.72rem;color:#444;padding:8px 14px;background:#fafafa}
+  .ph-orient b{color:var(--provgreen)}
+
+  header.tema{border:2px dashed var(--gold);border-radius:12px;padding:16px 20px;background:var(--panel);margin-bottom:16px}
+  header.tema h1{margin:0 0 4px;font-size:1.4rem;color:#fff}
+  header.tema p{margin:2px 0;color:var(--cream);font-size:.92rem}
+  .blueprint-tag{font-family:'Courier New',monospace;color:var(--gold);font-size:.82rem}
+
+  .savebar{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:12px 0 0;font-size:.82rem;color:var(--gold2)}
+  .savebar button{background:rgba(24,58,40,.7);color:var(--ink);border:1px solid rgba(201,162,74,.4);border-radius:8px;padding:6px 10px;cursor:pointer;font-size:.82rem}
+  .savebar button:hover{border-color:var(--gold);color:#fff}
+
+  .q{background:var(--panel);border:1px solid rgba(201,162,74,.3);border-radius:12px;padding:16px 18px;margin:14px 0}
+  .q .head{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:8px}
+  .q .num{font-family:'Courier New',monospace;font-weight:bold;color:var(--gold2);font-size:.95rem}
+  .q .val{font-size:.78rem;color:var(--amber);white-space:nowrap}
+  .q .badge{font-size:.66rem;font-family:'Courier New',monospace;letter-spacing:1px;padding:2px 8px;border-radius:12px;background:rgba(201,162,74,.16);color:var(--gold2);border:1px solid rgba(201,162,74,.34)}
+  .enun{margin:6px 0 10px;color:#fff}
+  .enun .foco{color:var(--yellow);font-weight:bold}
+  .textbox{background:rgba(242,232,208,.96);color:#2a2416;border-radius:8px;padding:12px 16px;margin:8px 0 12px;font-size:.94rem;font-family:Georgia,serif;line-height:1.55}
+  .textbox .fonte{display:block;text-align:right;font-size:.75rem;color:#6a5c3a;margin-top:6px;font-style:italic}
+  .affirms{margin:8px 0;padding-left:2px}
+  .affirms .af{margin:5px 0;padding-left:6px}
+  .affirms .rn{color:var(--gold2);font-weight:bold;font-family:'Courier New',monospace;margin-right:6px}
+  ul.opts{list-style:none;margin:6px 0 0;padding:0}
+  ul.opts li{margin:7px 0}
+  ul.opts label{display:flex;gap:10px;align-items:flex-start;background:rgba(24,58,40,.5);border:1px solid rgba(201,162,74,.24);border-radius:9px;padding:10px 12px;cursor:pointer;transition:.12s}
+  ul.opts label:hover{border-color:var(--gold)}
+  ul.opts input{margin-top:3px}
+  .letra{font-weight:bold;color:var(--gold2);font-family:'Courier New',monospace}
+  .som-opts label{display:flex;gap:10px;align-items:flex-start;background:rgba(24,58,40,.5);border:1px solid rgba(201,162,74,.24);border-radius:9px;padding:10px 12px;cursor:pointer;margin:7px 0}
+  .som-val{font-family:'Courier New',monospace;font-weight:bold;color:var(--amber);min-width:26px}
+  textarea{width:100%;background:rgba(242,232,208,.96);color:#2a2416;border:1px solid rgba(201,162,74,.45);border-radius:8px;padding:10px 12px;font-size:.92rem;font-family:inherit;resize:vertical;min-height:64px;margin-top:6px}
+
+  /* Painel de finalizar */
+  .finalize{background:var(--panel);border:2px solid var(--gold);border-radius:14px;padding:20px 22px;margin:26px 0;text-align:center}
+  .finalize h2{margin:0 0 8px;color:#fff}
+  .btn-big{background:var(--provred);color:#fff;border:none;border-radius:10px;padding:12px 26px;font-size:1.05rem;font-weight:bold;cursor:pointer;letter-spacing:.5px}
+  .btn-big:hover{filter:brightness(1.12)}
+  .code-show{margin:16px 0;font-size:1.05rem;color:var(--cream)}
+  .code-show .code{font-family:'Courier New',monospace;font-size:1.6rem;font-weight:bold;color:var(--gold2);letter-spacing:3px;display:inline-block;margin:6px 0;background:rgba(0,0,0,.28);padding:6px 16px;border-radius:8px}
+  .unlock{margin-top:14px}
+  .unlock input{background:rgba(242,232,208,.96);color:#2a2416;border:1px solid var(--gold);border-radius:8px;padding:9px 12px;font-size:1rem;font-family:'Courier New',monospace;text-transform:uppercase;width:180px;text-align:center;letter-spacing:2px}
+  .unlock button{background:var(--gold);color:#2a2010;border:none;border-radius:8px;padding:9px 16px;font-weight:bold;cursor:pointer;margin-left:6px}
+  .msg{margin-top:10px;font-size:.9rem;min-height:20px}
+  .msg.err{color:var(--wax)} .msg.ok{color:var(--green)}
+  .score{font-size:1.1rem;color:#fff;margin:6px 0}
+
+  /* Gabarito */
+  .gab{display:none;margin-top:14px;border-top:1px dashed rgba(201,162,74,.45);padding-top:12px}
+  .gab.show{display:block}
+  .gab .opt-g{padding:8px 12px;border-radius:8px;margin:6px 0;font-size:.9rem}
+  .gab .opt-g.correct{background:rgba(95,191,122,.16);border:1px solid var(--green)}
+  .gab .opt-g.wrongpick{background:rgba(155,45,45,.18);border:1px solid var(--wax)}
+  .gab .opt-g.neutral{background:rgba(255,255,255,.04);border:1px solid rgba(201,162,74,.18);color:#cbbf9a}
+  .gab .tag{font-weight:bold;font-size:.78rem;margin-right:6px}
+  .gab .tag.c{color:var(--green)} .gab .tag.w{color:#e07a7a}
+  .gab .model{background:rgba(95,191,122,.1);border-left:3px solid var(--green);border-radius:0 8px 8px 0;padding:10px 12px;margin:8px 0;font-size:.9rem}
+  .gab .model b{color:var(--green)}
+  .selfeval{margin-top:8px;font-size:.88rem}
+  .selfeval button{background:rgba(24,58,40,.7);border:1px solid rgba(201,162,74,.34);color:var(--ink);border-radius:8px;padding:6px 10px;cursor:pointer;margin-right:6px}
+  .selfeval button.sel{border-color:var(--green);color:var(--green)}
+  .footer{margin-top:40px;text-align:center;font-size:.82rem;color:var(--gold);opacity:.75;font-family:'Courier New',monospace}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <nav class="tabs">
+    <a href="index.html">🏛️ Início</a>
+    <a href="diagnostico.html">🔎 Diagnóstico</a>
+    <a href="resumo.html">📜 Resumo de Revisão</a>
+    <a href="simulado.html" class="here">✒️ Simulado</a>
+  </nav>
+
+  <!-- Cabeçalho estilo prova São José -->
+  <div class="prova-header">
+    <div class="ph-top">
+      <div class="ph-logo"><div class="sj">◯ São José</div><div class="cl">Colégio</div></div>
+      <div class="ph-rede"><b>REDE DIVINA PROVIDÊNCIA</b><small>Sociedade Divina Providência · Tubarão / SC</small></div>
+      <div class="ph-anos">130<small>ANOS</small></div>
+    </div>
+    <div class="ph-grid">
+      <div><b>Aluno(a):</b> ______________________</div>
+      <div><b>8º Ano</b> &nbsp;&nbsp; <b>Data:</b> ____/____/______</div>
+      <div><b>Professor(a):</b> ______________________</div>
+      <div><b>Nota Final:</b> __________</div>
+      <div><b>Peso da avaliação:</b> 10,0</div>
+      <div><b>Erros ortográficos:</b> __________</div>
+    </div>
+    <div class="ph-title">Avaliação de Recuperação — História</div>
+    <div class="ph-orient"><b>Orientações:</b> Leia com atenção antes de responder. Nas discursivas, escreva com letra legível e capriche na explicação. Duração sugerida: 1h. — <i>Simulado de treino (espelho da prova).</i></div>
+  </div>
+
+  <header class="tema">
+    <h1>✒️ Simulado de Recuperação</h1>
+    <p>30 questões no formato da professora — múltipla escolha, "assinale a INCORRETA", V/F, somatório, números romanos, interpretação de texto e discursivas. Responda tudo, clique em <b>Finalizar</b> e use o <b>código de liberação</b> para abrir o gabarito comentado.</p>
+    <p class="blueprint-tag">// ARQUIVO IMPERIAL · História do Brasil (Independência e Primeiro Reinado) · 8º ano · Colégio São José</p>
+    <div class="savebar">
+      <span id="savestatus">💾 salvamento automático ligado</span>
+      <button onclick="doExport()">📥 Exportar</button>
+      <button onclick="doImport()">📤 Importar</button>
+      <button onclick="doReset()">🗑️ Zerar</button>
+    </div>
+  </header>
+
+  <div id="quiz"></div>
+
+  <div class="finalize">
+    <h2>✅ Terminei o simulado</h2>
+    <p style="color:var(--cream)">Clique para corrigir as questões objetivas e gerar seu <b>código de liberação</b>.</p>
+    <button class="btn-big" onclick="finalizar()">FINALIZAR E GERAR CÓDIGO</button>
+    <div id="resultbox"></div>
+  </div>
+
+  <div class="footer">// fim do simulado · bom trabalho, arquivista-mor do Império!</div>
+
+</div>
+
+<script>
+(function(){
+"use strict";
+
+/* ---------- BANCO DE QUESTÕES ----------
+   objetivas contam para o código (mc, rom, som, vf).
+   disc é autoavaliada (não conta). */
+var Q = [
+  {n:1,type:'mc',val:'(0,3)',badge:'INTERPRETAÇÃO',
+   text:'Em 1807, as tropas de Napoleão Bonaparte avançaram sobre Portugal porque o país insistia em manter comércio com a Inglaterra, desrespeitando o Bloqueio Continental. Diante da ameaça de invasão, a família real portuguesa embarcou às pressas e, protegida por navios ingleses, atravessou o oceano rumo ao Brasil, onde desembarcou em 1808.',
+   fonte:'Texto para as questões 1 e 2.',
+   enun:'Segundo o texto, o que levou a família real a deixar Portugal?',
+   opts:[{id:'a',t:'A vontade de conhecer as riquezas naturais do Brasil.'},{id:'b',t:'A ameaça de invasão das tropas de Napoleão.'},{id:'c',t:'Um convite feito pelos colonos brasileiros.'},{id:'d',t:'A descoberta de ouro nas Minas Gerais.'}],
+   correct:'b',
+   why:{a:'O texto não fala em curiosidade; foi uma fuga forçada, não um passeio.',b:'Correta: a corte fugiu "diante da ameaça de invasão" das tropas de Napoleão.',c:'Não houve convite dos colonos; a decisão partiu da Coroa.',d:'O ouro não aparece no texto como motivo da viagem.'}},
+
+  {n:2,type:'mc',val:'(0,3)',badge:'INTERPRETAÇÃO',
+   enun:'A expressão "protegida por navios ingleses" mostra que, naquele momento, Portugal era:',
+   opts:[{id:'a',t:'inimigo da Inglaterra.'},{id:'b',t:'aliado da Inglaterra.'},{id:'c',t:'aliado de Napoleão.'},{id:'d',t:'neutro, sem nenhum acordo.'}],
+   correct:'b',
+   why:{a:'Se fosse inimigo, a Inglaterra não daria proteção à corte.',b:'Correta: só um aliado seria escoltado pelos navios ingleses — Portugal preferiu a Inglaterra ao Bloqueio de Napoleão.',c:'Justamente por NÃO obedecer a Napoleão é que Portugal foi ameaçado.',d:'A proteção inglesa mostra que havia, sim, uma aliança.'}},
+
+  {n:3,type:'mc',val:'(0,3)',badge:'VINDA DA CORTE · 1808',
+   enun:'O principal motivo da vinda da corte portuguesa para o Brasil, em 1808, foi:',
+   opts:[{id:'a',t:'fugir da invasão napoleônica em Portugal.'},{id:'b',t:'proteger a produção de café, ouro e açúcar do Brasil.'},{id:'c',t:'punir os líderes da Conjuração Mineira.'},{id:'d',t:'assinar a Independência do Brasil.'}],
+   correct:'a',
+   why:{a:'Correta: Napoleão invadiu Portugal (1807) por causa do Bloqueio Continental; a corte fugiu para o Brasil.',b:'Pegadinha comum: a corte não veio "cuidar da produção" — veio fugindo de Napoleão. A economia mudou DEPOIS, como consequência.',c:'A Conjuração Mineira (1789) já tinha sido reprimida bem antes e nada tem a ver com a vinda da corte.',d:'A Independência só viria em 1822, 14 anos depois.'}},
+
+  {n:4,type:'mc',val:'(0,3)',badge:'ABERTURA DOS PORTOS',
+   enun:'Assim que chegou ao Brasil, em 1808, D. João assinou a <span class="foco">Abertura dos Portos às Nações Amigas</span>. Essa medida significou, na prática:',
+   opts:[{id:'a',t:'o fim do monopólio comercial de Portugal, permitindo o comércio direto com outros países (sobretudo a Inglaterra).'},{id:'b',t:'a proibição de qualquer comércio com o exterior.'},{id:'c',t:'a criação de impostos só para os produtos brasileiros.'},{id:'d',t:'a devolução do Brasil à condição de colônia fechada.'}],
+   correct:'a',
+   why:{a:'Correta: acabou o "exclusivo colonial" (Brasil só podia comerciar com Portugal). Os portos abriram, e a Inglaterra foi a mais beneficiada.',b:'Foi o contrário: os portos foram ABERTOS, não fechados.',c:'A medida foi sobre abrir o comércio, não criar imposto só para o Brasil.',d:'Abrir os portos AFROUXOU o pacto colonial — não devolveu o Brasil à condição de colônia fechada.'}},
+
+  {n:5,type:'som',val:'(1,0)',badge:'SOMATÓRIO',
+   enun:'Sobre as mudanças ocorridas no Brasil <span class="foco">depois</span> da chegada da corte portuguesa (a partir de 1808), marque as afirmativas <span class="foco">CORRETAS</span> e some seus números.',
+   items:[
+     {v:1,t:'A Abertura dos Portos permitiu o comércio direto com outras nações.',correct:true,why:'Correta: em 1808 os portos foram abertos às nações amigas.'},
+     {v:2,t:'Foram criadas instituições como o Banco do Brasil e a Imprensa Régia.',correct:true,why:'Correta: a presença da corte trouxe bancos, imprensa, escolas e jardim botânico.'},
+     {v:4,t:'O Brasil foi elevado à condição de Reino Unido a Portugal, em 1815.',correct:true,why:'Correta: em 1815 o Brasil deixou de ser só colônia e virou Reino Unido a Portugal e Algarves.'},
+     {v:8,t:'Todo comércio com o exterior foi proibido.',correct:false,why:'Errada: foi o oposto — os portos foram ABERTOS ao comércio.'},
+     {v:16,t:'A vinda da corte fez o Brasil voltar a ser colônia fechada de Portugal.',correct:false,why:'Errada: a corte aqui instalada AMPLIOU a autonomia do Brasil, não o fechou.'}
+   ],
+   correctSum:7},
+
+  {n:6,type:'mc',val:'(0,5)',badge:'TRATADO DE 1810',
+   enun:'Pelo <span class="foco">Tratado de Comércio e Navegação de 1810</span>, os produtos de outras nações que não fossem Inglaterra ou Portugal passaram a pagar de imposto:',
+   opts:[{id:'a',t:'10%.'},{id:'b',t:'12%.'},{id:'c',t:'15%.'},{id:'d',t:'16%.'},{id:'e',t:'24%.'}],
+   correct:'c',
+   why:{a:'Não é 10%.',b:'Cuidado: 12% é o valor que costuma ser marcado por engano.',c:'Correta: o tratado fixou 15% para os produtos das demais nações, dando vantagem à Inglaterra.',d:'16% não é o valor cobrado das demais nações neste tratado.',e:'24% não corresponde ao valor pedido na questão.'}},
+
+  {n:7,type:'mc',val:'(0,5)',badge:'ASSINALE A INCORRETA',
+   enun:'Sobre as <span class="foco">causas</span> da Conjuração Mineira, assinale a alternativa <span class="foco">INCORRETA</span>:',
+   opts:[
+     {id:'a',t:'O aumento da fiscalização e da cobrança de impostos sobre a mineração aumentou a insatisfação.'},
+     {id:'b',t:'As ideias iluministas e a independência das Treze Colônias inspiraram os conjurados.'},
+     {id:'c',t:'A ameaça da derrama foi um dos estopins do movimento.'},
+     {id:'d',t:'A Coroa portuguesa adotou medidas de alívio nos impostos para agradar a elite mineradora.'}],
+   correct:'d',
+   why:{a:'Verdadeira: mais fiscalização e impostos = mais revolta. (Não é a resposta.)',b:'Verdadeira: o Iluminismo e o exemplo dos EUA inspiraram o movimento. (Não é a resposta.)',c:'Verdadeira: a derrama (cobrança forçada dos impostos atrasados) foi o gatilho. (Não é a resposta.)',d:'Esta é a INCORRETA (resposta): a Coroa NÃO aliviou os impostos — ao contrário, apertou a cobrança com a derrama.'}},
+
+  {n:8,type:'mc',val:'(0,5)',badge:'CONJURAÇÃO MINEIRA',
+   enun:'A <span class="foco">composição social</span> da Conjuração Mineira reunia principalmente:',
+   opts:[
+     {id:'a',t:'a elite mineradora, intelectuais, membros do clero e militares.'},
+     {id:'b',t:'apenas escravizados e trabalhadores pobres.'},
+     {id:'c',t:'somente comerciantes ingleses.'},
+     {id:'d',t:'exclusivamente a família real portuguesa.'}],
+   correct:'a',
+   why:{a:'Correta: o movimento era da elite — mineradores, intelectuais, padres e militares.',b:'Errada: NÃO houve participação popular ampla; era um movimento de elite.',c:'Comerciantes ingleses não lideraram a Conjuração Mineira.',d:'A família real era justamente o alvo da revolta, não participante.'}},
+
+  {n:9,type:'mc',val:'(0,3)',badge:'CONCEITO',
+   enun:'O que era a <span class="foco">derrama</span>?',
+   opts:[
+     {id:'a',t:'A cobrança forçada dos impostos atrasados devidos à Coroa portuguesa.'},
+     {id:'b',t:'A libertação dos escravizados das minas.'},
+     {id:'c',t:'Um imposto pago pela Inglaterra ao Brasil.'},
+     {id:'d',t:'A abertura dos portos brasileiros.'}],
+   correct:'a',
+   why:{a:'Correta: derrama era a cobrança à força do que faltava para completar o imposto sobre o ouro.',b:'Nada a ver com libertação de escravizados.',c:'A Inglaterra não pagava a derrama; quem pagava eram os mineradores.',d:'A abertura dos portos é de 1808, outro assunto.'}},
+
+  {n:10,type:'vf',val:'(1,0)',badge:'VERDADEIRO / FALSO',
+   enun:'Marque <b>V</b> (verdadeiro) ou <b>F</b> (falso) sobre a Conjuração Mineira (0,2 cada):',
+   items:[
+     {t:'A Conjuração Mineira tinha entre seus objetivos a independência da região.',ans:true,why:'Verdadeiro: os conjurados queriam se separar de Portugal e proclamar uma república.'},
+     {t:'O plano foi descoberto porque um dos participantes traiu o grupo (delação).',ans:true,why:'Verdadeiro: a conspiração foi denunciada e desmontada antes de estourar.'},
+     {t:'A Conjuração Mineira teve ampla participação popular e do povo pobre.',ans:false,why:'Falso: foi um movimento de elite, sem participação popular ampla.'},
+     {t:'Tiradentes foi condenado à morte e enforcado como líder do movimento.',ans:true,why:'Verdadeiro: Tiradentes foi o único executado, virando símbolo do movimento.'},
+     {t:'A Coroa portuguesa não puniu ninguém envolvido na conspiração.',ans:false,why:'Falso: houve prisões, degredos e a execução de Tiradentes.'}
+   ]},
+
+  {n:11,type:'mc',val:'(0,5)',badge:'REPRESSÃO',
+   enun:'A Conjuração Mineira <span class="foco">não chegou a acontecer</span> de fato porque:',
+   opts:[
+     {id:'a',t:'o plano foi descoberto e denunciado antes de começar, e os conjurados foram presos.'},
+     {id:'b',t:'os conjurados venceram e proclamaram a independência de Minas.'},
+     {id:'c',t:'a Coroa aceitou todas as reivindicações do grupo.'},
+     {id:'d',t:'Napoleão invadiu Minas Gerais.'}],
+   correct:'a',
+   why:{a:'Correta: houve traição/delação; o plano foi descoberto e os líderes, presos antes da revolta.',b:'Errada (pegadinha): o movimento NÃO venceu — foi desmontado. Tiradentes foi enforcado.',c:'A Coroa não cedeu; puniu os envolvidos.',d:'Napoleão nunca invadiu Minas Gerais.'}},
+
+  {n:12,type:'rom',val:'(1,0)',badge:'NÚMEROS ROMANOS',
+   enun:'Sobre a <span class="foco">Revolução Pernambucana de 1817</span>, analise as afirmações:',
+   affirms:[
+     {rn:'I',t:'Teve entre suas causas os altos impostos e a crise da economia açucareira.'},
+     {rn:'II',t:'Foi influenciada por ideias iluministas e republicanas.'},
+     {rn:'III',t:'Conseguiu tornar Pernambuco independente de forma definitiva.'},
+     {rn:'IV',t:'Foi rapidamente derrotada pelas tropas portuguesas ainda em 1817.'}
+   ],
+   ask:'Estão <span class="foco">corretas</span> apenas:',
+   opts:[{id:'a',t:'I, II e IV.'},{id:'b',t:'I, II e III.'},{id:'c',t:'II, III e IV.'},{id:'d',t:'I, III e IV.'}],
+   correct:'a',
+   why:{a:'Correta: I, II e IV são verdadeiras; a revolta teve causas econômicas e ideais republicanos e foi derrotada em 1817.',b:'III está errada: Pernambuco NÃO ficou independente — a revolta foi esmagada.',c:'III está errada pelo mesmo motivo.',d:'III está errada: não houve independência definitiva.'}},
+
+  {n:13,type:'mc',val:'(0,5)',badge:'DESFECHO',
+   enun:'Sobre a <span class="foco">duração</span> da Revolução Pernambucana de 1817, é correto afirmar que:',
+   opts:[
+     {id:'a',t:'foi rapidamente derrotada pelas tropas portuguesas, ainda em 1817.'},
+     {id:'b',t:'Pernambuco tornou-se independente definitivamente.'},
+     {id:'c',t:'o governo revolucionário permaneceu no poder por vários anos.'},
+     {id:'d',t:'não houve nenhuma reação da Coroa portuguesa.'}],
+   correct:'a',
+   why:{a:'Correta: apesar de ter formado um governo provisório, a revolta durou poucos meses e foi esmagada em 1817.',b:'Errada (pegadinha campeã): Pernambuco NÃO ficou independente.',c:'Errada: o governo revolucionário durou pouco, não anos.',d:'Errada: a Coroa reagiu com tropas e puniu os líderes.'}},
+
+  {n:14,type:'mc',val:'(0,5)',badge:'ASSINALE A INCORRETA',
+   enun:'Sobre a Revolução Pernambucana de 1817, assinale a alternativa <span class="foco">INCORRETA</span>:',
+   opts:[
+     {id:'a',t:'Os altos impostos cobrados pela Coroa aumentaram a revolta dos pernambucanos.'},
+     {id:'b',t:'A crise da economia açucareira prejudicou a região.'},
+     {id:'c',t:'As ideias iluministas e republicanas influenciaram os participantes.'},
+     {id:'d',t:'Todos os líderes defendiam o fim imediato da escravidão e a participação popular ampla.'}],
+   correct:'d',
+   why:{a:'Verdadeira: os impostos pesados foram uma das causas. (Não é a resposta.)',b:'Verdadeira: a crise do açúcar afetou Pernambuco. (Não é a resposta.)',c:'Verdadeira: havia influência iluminista e republicana. (Não é a resposta.)',d:'Esta é a INCORRETA (resposta): os líderes NÃO defendiam o fim imediato da escravidão nem uma participação popular ampla.'}},
+
+  {n:15,type:'mc',val:'(0,5)',badge:'REVOLUÇÃO DO PORTO',
+   enun:'Os principais objetivos dos <span class="foco">liberais portugueses</span> na Revolução Liberal do Porto (1820) eram:',
+   opts:[
+     {id:'a',t:'criar uma monarquia constitucional, com Constituição, e trazer D. João VI de volta a Portugal — recolonizando o Brasil.'},
+     {id:'b',t:'proclamar a independência do Brasil.'},
+     {id:'c',t:'acabar com a monarquia e criar uma república em Portugal.'},
+     {id:'d',t:'manter o Brasil como Reino Unido, com total autonomia.'}],
+   correct:'a',
+   why:{a:'Correta: os liberais queriam limitar o rei com uma Constituição, o retorno de D. João VI e recolonizar o Brasil (fim da autonomia de 1808).',b:'Errada: os liberais portugueses queriam recolonizar o Brasil, não libertá-lo.',c:'Errada: eles queriam monarquia CONSTITUCIONAL, não uma república.',d:'Errada: eles queriam justamente TIRAR a autonomia do Brasil.'}},
+
+  {n:16,type:'mc',val:'(0,5)',badge:'DIA DO FICO',
+   enun:'No contexto da Independência, o que foi o <span class="foco">Dia do Fico</span> (1822)?',
+   opts:[
+     {id:'a',t:'A decisão de D. Pedro de permanecer no Brasil, contrariando as ordens das Cortes portuguesas.'},
+     {id:'b',t:'A decisão de D. Pedro de voltar a Portugal para obedecer às Cortes.'},
+     {id:'c',t:'A declaração de que o Brasil continuaria subordinado às Cortes.'},
+     {id:'d',t:'A convocação de uma Assembleia Constituinte em Portugal.'}],
+   correct:'a',
+   why:{a:'Correta: em 9/1/1822, D. Pedro disse que ficava no Brasil, desobedecendo às Cortes que mandavam ele voltar.',b:'Errada: ele NÃO voltou — decidiu ficar.',c:'Errada: o Fico foi um gesto de desobediência, não de submissão.',d:'Errada: não se tratava de uma Assembleia em Portugal.'}},
+
+  {n:17,type:'mc',val:'(0,5)',badge:'7 DE SETEMBRO',
+   enun:'Qual foi a principal <span class="foco">consequência política</span> do 7 de setembro de 1822?',
+   opts:[
+     {id:'a',t:'A separação política do Brasil em relação a Portugal, consolidando a Independência.'},
+     {id:'b',t:'A volta do Brasil à condição de colônia.'},
+     {id:'c',t:'A manutenção do Brasil sob as Cortes portuguesas.'},
+     {id:'d',t:'A criação de novas Cortes em Portugal para administrar o Brasil.'}],
+   correct:'a',
+   why:{a:'Correta: o 7 de setembro marcou a separação política do Brasil de Portugal.',b:'Errada: o Brasil se separou; não voltou a ser colônia.',c:'Errada: foi o rompimento com as Cortes, não a manutenção.',d:'Errada: não se criaram Cortes para administrar o Brasil.'}},
+
+  {n:18,type:'som',val:'(1,0)',badge:'SOMATÓRIO',
+   enun:'Sobre o <span class="foco">processo de Independência do Brasil</span>, marque as afirmativas <span class="foco">CORRETAS</span> e some seus números.',
+   items:[
+     {v:1,t:'O Dia do Fico (1822) foi um passo importante rumo à separação de Portugal.',correct:true,why:'Correta: ao ficar, D. Pedro se afastou das ordens das Cortes.'},
+     {v:2,t:'A Independência foi proclamada em 7 de setembro de 1822, às margens do rio Ipiranga.',correct:true,why:'Correta: essa é a data e o local simbólicos da Independência.'},
+     {v:4,t:'Após a Independência, o Brasil buscou o reconhecimento de outras nações.',correct:true,why:'Correta: o país precisou ser reconhecido para firmar sua posição internacional.'},
+     {v:8,t:'A Independência devolveu o Brasil ao domínio direto das Cortes portuguesas.',correct:false,why:'Errada: a Independência ROMPEU com Portugal, não o contrário.'},
+     {v:16,t:'Após 1822, o Brasil passou a ser governado por Napoleão.',correct:false,why:'Errada: o Brasil virou um Império governado por D. Pedro I.'}
+   ],
+   correctSum:7},
+
+  {n:19,type:'mc',val:'(0,5)',badge:'RECONHECIMENTO',
+   enun:'Depois da Independência, o Brasil precisou do <span class="foco">reconhecimento externo</span>. Entre os países que reconheceram a Independência estavam:',
+   opts:[
+     {id:'a',t:'Estados Unidos, Inglaterra e Portugal.'},
+     {id:'b',t:'França, Espanha e Rússia.'},
+     {id:'c',t:'Argentina, Chile e México.'},
+     {id:'d',t:'Alemanha, Itália e Japão.'}],
+   correct:'a',
+   why:{a:'Correta: os EUA reconheceram primeiro (1824); depois vieram Portugal (com indenização) e a Inglaterra, que mediou o acordo.',b:'Não foram esses os primeiros a reconhecer a Independência.',c:'Os países vizinhos não foram os protagonistas desse reconhecimento.',d:'Alemanha, Itália e Japão nem existiam como nações unificadas na época.'}},
+
+  {n:20,type:'mc',val:'(0,5)',badge:'CONSTITUIÇÃO 1824',
+   enun:'Qual aspecto marcou de forma mais significativa a <span class="foco">Constituição de 1824</span>?',
+   opts:[
+     {id:'a',t:'A instituição do Poder Moderador, exercido pelo imperador.'},
+     {id:'b',t:'A adoção do voto universal para toda a população.'},
+     {id:'c',t:'A criação de uma república federativa.'},
+     {id:'d',t:'A separação total entre Igreja e Estado.'}],
+   correct:'a',
+   why:{a:'Correta: a Constituição criou o Poder Moderador, um quarto poder só do imperador — símbolo da centralização.',b:'Errada: o voto era censitário (só quem tinha renda), não universal.',c:'Errada: o Brasil era um Império, não uma república federativa.',d:'Errada: o catolicismo era a religião oficial do Estado.'}},
+
+  {n:21,type:'rom',val:'(1,0)',badge:'NÚMEROS ROMANOS',
+   enun:'Sobre o <span class="foco">Primeiro Reinado</span> (1822–1831), analise as afirmações:',
+   affirms:[
+     {rn:'I',t:'A Constituição de 1824 foi outorgada (imposta) por D. Pedro I e criou o Poder Moderador.'},
+     {rn:'II',t:'A Confederação do Equador (1824) foi uma revolta contra a centralização do poder.'},
+     {rn:'III',t:'A Guerra da Cisplatina terminou com a vitória total do Brasil e a anexação da região.'},
+     {rn:'IV',t:'O desgaste do governo contribuiu para a abdicação de D. Pedro I em 1831.'}
+   ],
+   ask:'Estão <span class="foco">corretas</span> apenas:',
+   opts:[{id:'a',t:'I, II e IV.'},{id:'b',t:'I, II e III.'},{id:'c',t:'II, III e IV.'},{id:'d',t:'I, III e IV.'}],
+   correct:'a',
+   why:{a:'Correta: I, II e IV são verdadeiras.',b:'III está errada: o Brasil PERDEU a Cisplatina, que virou o Uruguai independente.',c:'III está errada pelo mesmo motivo.',d:'III está errada: não houve vitória nem anexação.'}},
+
+  {n:22,type:'mc',val:'(0,5)',badge:'CONFEDERAÇÃO DO EQUADOR',
+   enun:'Uma das principais <span class="foco">causas</span> da Confederação do Equador (1824) foi:',
+   opts:[
+     {id:'a',t:'a insatisfação com a centralização do poder na Constituição de 1824 e o desejo de formar uma república federalista.'},
+     {id:'b',t:'a defesa da manutenção do poder centralizado nas mãos do imperador.'},
+     {id:'c',t:'o apoio total à outorga da Constituição de 1824.'},
+     {id:'d',t:'a vontade de trazer a corte portuguesa de volta ao Brasil.'}],
+   correct:'a',
+   why:{a:'Correta: a revolta rejeitava a centralização e a Constituição outorgada, defendendo uma república federalista no Nordeste.',b:'Errada: os revoltosos eram CONTRA a centralização, não a favor.',c:'Errada: eles rejeitavam a Constituição imposta.',d:'Errada: a revolta nada tinha a ver com trazer a corte de volta.'}},
+
+  {n:23,type:'mc',val:'(0,5)',badge:'ASSINALE A INCORRETA',
+   enun:'Sobre a Confederação do Equador (1824), assinale a alternativa <span class="foco">INCORRETA</span>:',
+   opts:[
+     {id:'a',t:'Foi uma reação à forma centralizadora da Constituição de 1824.'},
+     {id:'b',t:'Defendia ideias republicanas e federalistas.'},
+     {id:'c',t:'Concentrou-se principalmente na região Nordeste, como em Pernambuco.'},
+     {id:'d',t:'Foi um movimento que apoiava o fortalecimento do Poder Moderador.'}],
+   correct:'d',
+   why:{a:'Verdadeira: foi uma reação à centralização da Constituição. (Não é a resposta.)',b:'Verdadeira: defendia república e federalismo. (Não é a resposta.)',c:'Verdadeira: teve força no Nordeste, especialmente em Pernambuco. (Não é a resposta.)',d:'Esta é a INCORRETA (resposta): a Confederação era CONTRA a centralização e o Poder Moderador, não a favor.'}},
+
+  {n:24,type:'vf',val:'(1,0)',badge:'VERDADEIRO / FALSO',
+   enun:'Marque <b>V</b> (verdadeiro) ou <b>F</b> (falso) sobre o Primeiro Reinado (0,2 cada):',
+   items:[
+     {t:'A Guerra da Cisplatina resultou na independência do Uruguai, em 1828.',ans:true,why:'Verdadeiro: o Brasil perdeu a província, que se tornou o Uruguai.'},
+     {t:'Os custos e a derrota na Guerra da Cisplatina ajudaram a desgastar o governo de D. Pedro I.',ans:true,why:'Verdadeiro: a guerra cara e malsucedida aumentou a insatisfação.'},
+     {t:'A Noite das Garrafadas foi uma festa de comemoração da Independência.',ans:false,why:'Falso: foi um conflito de rua entre portugueses (pró-D. Pedro) e brasileiros opositores.'},
+     {t:'A morte de Líbero Badaró enfraqueceu a imagem de D. Pedro I.',ans:true,why:'Verdadeiro: virou símbolo da repressão e aumentou a oposição ao imperador.'},
+     {t:'D. Pedro I abdicou do trono em 1831, em favor de seu filho.',ans:true,why:'Verdadeiro: em 7/4/1831 abdicou em favor de Pedro (futuro D. Pedro II).'}
+   ]},
+
+  {n:25,type:'mc',val:'(0,5)',badge:'NOITE DAS GARRAFADAS',
+   enun:'A <span class="foco">Noite das Garrafadas</span> (1831) foi marcada principalmente por:',
+   opts:[
+     {id:'a',t:'conflitos entre portugueses favoráveis a D. Pedro I e brasileiros opositores ao governo.'},
+     {id:'b',t:'uma grande festa popular em apoio ao imperador.'},
+     {id:'c',t:'a assinatura da paz com a Argentina.'},
+     {id:'d',t:'a chegada da família real ao Brasil.'}],
+   correct:'a',
+   why:{a:'Correta: foram confrontos nas ruas do Rio entre portugueses (a favor de D. Pedro I) e brasileiros (contra).',b:'Errada: não foi festa, foi conflito.',c:'Errada: não tem relação com a paz com a Argentina.',d:'Errada: a chegada da família real foi em 1808, não em 1831.'}},
+
+  {n:26,type:'mc',val:'(0,5)',badge:'INTERPRETAÇÃO',
+   text:'Líbero Badaró era jornalista e defensor da liberdade de imprensa. Em seus escritos, criticava o governo de D. Pedro I e denunciava práticas consideradas autoritárias. Em 1830, foi assassinado em circunstâncias que geraram grande comoção pública. Sua morte passou a ser vista como símbolo da repressão e ajudou a aumentar a oposição ao imperador.',
+   fonte:'Texto para a questão 26.',
+   enun:'De acordo com o texto, a morte de Líbero Badaró foi interpretada pelos opositores como:',
+   opts:[
+     {id:'a',t:'um episódio que intensificou as críticas ao governo e enfraqueceu D. Pedro I.'},
+     {id:'b',t:'um fato sem importância para a política da época.'},
+     {id:'c',t:'um acontecimento que fortaleceu a imagem do imperador.'},
+     {id:'d',t:'uma prova do apoio popular a D. Pedro I.'}],
+   correct:'a',
+   why:{a:'Correta: o texto diz que a morte virou "símbolo da repressão" e "aumentou a oposição ao imperador".',b:'Errada: o texto mostra que gerou grande comoção e teve peso político.',c:'Errada: enfraqueceu, e não fortaleceu, a imagem de D. Pedro I.',d:'Errada: mostrou insatisfação, não apoio.'}},
+
+  {n:27,type:'mc',val:'(0,5)',badge:'GUERRA DA CISPLATINA',
+   enun:'A <span class="foco">Guerra da Cisplatina</span> (1825–1828) envolveu:',
+   opts:[
+     {id:'a',t:'o Império do Brasil e as Províncias Unidas do Rio da Prata (Argentina), disputando a Província Cisplatina.'},
+     {id:'b',t:'o Brasil e Portugal, disputando a cidade do Rio de Janeiro.'},
+     {id:'c',t:'o Brasil e a Inglaterra, por causa dos portos.'},
+     {id:'d',t:'a França e a Espanha, na Europa.'}],
+   correct:'a',
+   why:{a:'Correta: Brasil e Províncias Unidas do Rio da Prata disputaram a Cisplatina, que se tornou o Uruguai independente em 1828.',b:'Errada: não foi contra Portugal nem pelo Rio de Janeiro.',c:'Errada: a Inglaterra não era o adversário nessa guerra.',d:'Errada: a guerra foi na América do Sul, envolvendo o Brasil.'}},
+
+  {n:28,type:'rom',val:'(1,0)',badge:'NÚMEROS ROMANOS',
+   enun:'Sobre os <span class="foco">fatores que contribuíram para a Abdicação de D. Pedro I</span> (1831), analise:',
+   affirms:[
+     {rn:'I',t:'A crise econômica agravou o descontentamento com o governo.'},
+     {rn:'II',t:'O aumento da oposição política enfraqueceu a sustentação do imperador.'},
+     {rn:'III',t:'Os custos e a derrota na Guerra da Cisplatina desgastaram o governo.'},
+     {rn:'IV',t:'A ampliação do apoio popular fortaleceu o governo de D. Pedro I.'}
+   ],
+   ask:'Estão <span class="foco">corretas</span> apenas:',
+   opts:[{id:'a',t:'I, II e III.'},{id:'b',t:'I, II e IV.'},{id:'c',t:'II, III e IV.'},{id:'d',t:'I, III e IV.'}],
+   correct:'a',
+   why:{a:'Correta: I, II e III explicam a abdicação (crise, oposição e desgaste da Cisplatina).',b:'IV está errada: o apoio popular DIMINUIU — não fortaleceu o governo.',c:'IV está errada pelo mesmo motivo.',d:'IV está errada: não houve fortalecimento do governo.'}},
+
+  {n:29,type:'disc',val:'(1,0)',badge:'DISCURSIVA',
+   enun:'Explique os principais <span class="foco">motivos</span> que levaram à vinda da corte portuguesa para o Brasil em 1808 e cite <span class="foco">uma mudança econômica</span> que ocorreu por causa disso.',
+   model:'A corte veio para o Brasil FUGINDO da invasão das tropas de Napoleão, que ameaçavam Portugal por causa do Bloqueio Continental (Portugal continuava comerciando com a Inglaterra). Protegida por navios ingleses, a família real atravessou o oceano e chegou ao Brasil em 1808. Uma mudança econômica importante foi a Abertura dos Portos às Nações Amigas (1808), que acabou com o monopólio comercial de Portugal e permitiu o comércio direto com outros países, beneficiando principalmente a Inglaterra. (Também vale citar o Tratado de 1810, a criação do Banco do Brasil ou a elevação a Reino Unido em 1815.)'},
+
+  {n:30,type:'disc',val:'(1,0)',badge:'DISCURSIVA',
+   enun:'Explique o que foi a <span class="foco">Guerra da Cisplatina</span> (quais lados estavam envolvidos e qual foi o resultado) e diga como ela ajudou no <span class="foco">desgaste</span> de D. Pedro I.',
+   model:'A Guerra da Cisplatina (1825–1828) foi um conflito entre o Império do Brasil e as Províncias Unidas do Rio da Prata (a atual Argentina) pela posse da Província Cisplatina. O Brasil acabou derrotado e a região se tornou independente, dando origem ao Uruguai (1828). Como a guerra foi cara e terminou em derrota, ela aumentou a crise econômica e a insatisfação com o governo, contribuindo para o desgaste de D. Pedro I — um dos fatores que, junto com a oposição política e a crise, levaram à sua abdicação em 1831.'}
+];
+
+/* ---------- utilidades ---------- */
+var KEY="recup_hist8_simulado";
+var mem={answers:{},self:{},code:null};
+function load(){ try{var r=localStorage.getItem(KEY); if(r){var o=JSON.parse(r); if(o){mem=o; mem.answers=mem.answers||{}; mem.self=mem.self||{};}}}catch(e){} }
+function save(){ try{localStorage.setItem(KEY,JSON.stringify(mem)); flash("💾 salvo "+new Date().toLocaleTimeString('pt-BR'));}catch(e){flash("💾 salvo (só nesta sessão)");} }
+function flash(t){var s=document.getElementById('savestatus'); if(s)s.textContent=t;}
+load();
+
+// RNG com semente fixa (mulberry32)
+function rng(seed){return function(){seed|=0;seed=seed+0x6D2B79F5|0;var t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+function shuffle(arr,seed){var a=arr.slice(),r=rng(seed);for(var i=a.length-1;i>0;i--){var j=Math.floor(r()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}return a;}
+var LETTERS=['a','b','c','d','e'];
+
+/* ---------- render ---------- */
+var quiz=document.getElementById('quiz');
+Q.forEach(function(q){
+  var div=document.createElement('div'); div.className='q'; div.id='q'+q.n;
+  var html='<div class="head"><span class="num">QUESTÃO '+q.n+'</span><span><span class="badge">'+q.badge+'</span> <span class="val">'+q.val+'</span></span></div>';
+  if(q.text){html+='<div class="textbox">'+q.text+(q.fonte?'<span class="fonte">'+q.fonte+'</span>':'')+'</div>';}
+  html+='<div class="enun">'+q.enun+'</div>';
+
+  if(q.type==='mc'||q.type==='rom'){
+    if(q.affirms){html+='<div class="affirms">';q.affirms.forEach(function(a){html+='<div class="af"><span class="rn">'+a.rn+'.</span>'+a.t+'</div>';});html+='</div>';}
+    if(q.ask){html+='<div class="enun">'+q.ask+'</div>';}
+    var shOpts=shuffle(q.opts,q.n*97+13);
+    html+='<ul class="opts">';
+    shOpts.forEach(function(o,i){
+      var checked=(mem.answers['q'+q.n]===o.id)?'checked':'';
+      html+='<li><label><input type="radio" name="q'+q.n+'" value="'+o.id+'" '+checked+'><span><span class="letra">'+LETTERS[i]+')</span> '+o.t+'</span></label></li>';
+    });
+    html+='</ul>';
+  }
+  else if(q.type==='som'){
+    html+='<div class="som-opts">';
+    q.items.forEach(function(it,idx){
+      var arr=mem.answers['q'+q.n]||[];
+      var checked=(arr.indexOf(it.v)>=0)?'checked':'';
+      var lbl=String(it.v).padStart(2,'0');
+      html+='<label><input type="checkbox" name="q'+q.n+'" value="'+it.v+'" '+checked+'><span class="som-val">'+lbl+'</span><span>'+it.t+'</span></label>';
+    });
+    html+='</div>';
+  }
+  else if(q.type==='vf'){
+    html+='<div class="som-opts">';
+    q.items.forEach(function(it,idx){
+      var cur=(mem.answers['q'+q.n]||{})[idx];
+      html+='<label style="cursor:default"><span style="display:flex;gap:6px">'
+        +'<button type="button" class="vfbtn '+(cur==='V'?'sel':'')+'" data-q="'+q.n+'" data-i="'+idx+'" data-v="V" style="background:'+(cur==='V'?'rgba(95,191,122,.28)':'rgba(24,58,40,.7)')+';border:1px solid rgba(201,162,74,.34);color:#fff;border-radius:6px;padding:4px 12px;cursor:pointer;font-weight:bold">V</button>'
+        +'<button type="button" class="vfbtn '+(cur==='F'?'sel':'')+'" data-q="'+q.n+'" data-i="'+idx+'" data-v="F" style="background:'+(cur==='F'?'rgba(155,45,45,.32)':'rgba(24,58,40,.7)')+';border:1px solid rgba(201,162,74,.34);color:#fff;border-radius:6px;padding:4px 12px;cursor:pointer;font-weight:bold">F</button>'
+        +'</span><span style="flex:1">'+it.t+'</span></label>';
+    });
+    html+='</div>';
+  }
+  else if(q.type==='disc'){
+    var val=mem.answers['q'+q.n]||'';
+    html+='<textarea data-q="'+q.n+'" placeholder="Escreva sua resposta...">'+val+'</textarea>';
+  }
+
+  html+='<div class="gab" id="gab'+q.n+'"></div>';
+  div.innerHTML=html;
+  quiz.appendChild(div);
+});
+
+/* ---------- captura de respostas ---------- */
+quiz.addEventListener('change',function(e){
+  var t=e.target;
+  if(t.type==='radio'){ mem.answers[t.name]=t.value; save(); }
+  else if(t.type==='checkbox'){
+    var q=t.name, arr=mem.answers[q]||[]; var v=parseInt(t.value,10);
+    if(t.checked){if(arr.indexOf(v)<0)arr.push(v);} else {arr=arr.filter(function(x){return x!==v;});}
+    mem.answers[q]=arr; save();
+  }
+});
+quiz.addEventListener('input',function(e){
+  var t=e.target;
+  if(t.tagName==='TEXTAREA'){ mem.answers['q'+t.getAttribute('data-q')]=t.value; save(); }
+});
+quiz.addEventListener('click',function(e){
+  var t=e.target;
+  if(t.classList.contains('vfbtn')){
+    var n=t.getAttribute('data-q'), i=t.getAttribute('data-i'), v=t.getAttribute('data-v');
+    mem.answers['q'+n]=mem.answers['q'+n]||{}; mem.answers['q'+n][i]=v; save();
+    var group=t.parentNode.querySelectorAll('.vfbtn');
+    group.forEach(function(b){
+      var isSel=b.getAttribute('data-v')===v;
+      b.classList.toggle('sel',isSel);
+      b.style.background=isSel?(v==='V'?'rgba(95,191,122,.28)':'rgba(155,45,45,.32)'):'rgba(24,58,40,.7)';
+    });
+  }
+});
+
+/* ---------- correção ---------- */
+function isObjective(q){return ['mc','rom','som','vf'].indexOf(q.type)>=0;}
+function questionCorrect(q){
+  var a=mem.answers['q'+q.n];
+  if(q.type==='mc'||q.type==='rom'){ return a===q.correct; }
+  if(q.type==='som'){ if(!a)return false; var sum=a.reduce(function(x,y){return x+y;},0); return sum===q.correctSum; }
+  if(q.type==='vf'){ if(!a)return false; for(var i=0;i<q.items.length;i++){var exp=q.items[i].ans?'V':'F'; if(a[i]!==exp)return false;} return true; }
+  return false;
+}
+
+function genCode(acertos){
+  if(mem.code) return mem.code;
+  var pool="ABCDEFGHJKLMNPQRSTUVWXYZ"; // sem I e O
+  var r=rng(Date.now()%100000+acertos);
+  var y1=pool[Math.floor(r()*pool.length)], y2=pool[Math.floor(r()*pool.length)];
+  var xx=String(acertos).padStart(2,'0');
+  mem.code="SIM-"+xx+"-"+y1+y2; save();
+  return mem.code;
+}
+
+window.finalizar=function(){
+  var objetivas=Q.filter(isObjective);
+  var acertos=0;
+  objetivas.forEach(function(q){ if(questionCorrect(q)) acertos++; });
+  var code=genCode(acertos);
+  var box=document.getElementById('resultbox');
+  box.innerHTML=
+    '<div class="score">Acertos nas questões objetivas: <b>'+acertos+' de '+objetivas.length+'</b></div>'
+    +'<div class="code-show">Seu código de liberação (anote e mostre à sua mãe):<br><span class="code">'+code+'</span><br><small style="color:var(--gold2)">Os dois números do meio mostram quantas você acertou.</small></div>'
+    +'<div class="unlock"><input id="codein" maxlength="9" placeholder="SIM-__-__"><button onclick="abrirGabarito()">Abrir gabarito comentado</button><div class="msg" id="unlockmsg"></div></div>';
+  box.scrollIntoView({behavior:'smooth'});
+};
+
+window.abrirGabarito=function(){
+  var v=(document.getElementById('codein').value||'').trim().toUpperCase();
+  var msg=document.getElementById('unlockmsg');
+  if(v!==mem.code){ msg.className='msg err'; msg.textContent='Código incorreto. Digite exatamente o código gerado acima.'; return; }
+  msg.className='msg ok'; msg.textContent='Gabarito liberado! Role a página para ver os comentários.';
+  Q.forEach(renderGabarito);
+};
+
+function renderGabarito(q){
+  var g=document.getElementById('gab'+q.n); if(!g)return;
+  var a=mem.answers['q'+q.n]; var html='';
+  if(q.type==='mc'||q.type==='rom'){
+    var ok=(a===q.correct);
+    html+='<div style="margin-bottom:6px"><b class="'+(ok?'tag c':'tag w')+'">'+(ok?'✓ Você acertou':'✗ Reveja')+'</b></div>';
+    q.opts.forEach(function(o){
+      var cls='neutral',tag='';
+      if(o.id===q.correct){cls='correct';tag='<span class="tag c">✔ correta</span>';}
+      else if(o.id===a){cls='wrongpick';tag='<span class="tag w">sua resposta</span>';}
+      html+='<div class="opt-g '+cls+'">'+tag+' '+o.t+'<br><small>'+q.why[o.id]+'</small></div>';
+    });
+  }
+  else if(q.type==='som'){
+    var sum=(a||[]).reduce(function(x,y){return x+y;},0);
+    var ok=(sum===q.correctSum);
+    html+='<div style="margin-bottom:6px"><b class="'+(ok?'tag c':'tag w')+'">'+(ok?'✓ Você acertou':'✗ Reveja')+'</b> — soma correta: <b>'+q.correctSum+'</b> (sua soma: '+sum+')</div>';
+    q.items.forEach(function(it){
+      var picked=(a||[]).indexOf(it.v)>=0;
+      var cls=it.correct?'correct':'neutral';
+      var tag=it.correct?'<span class="tag c">deveria somar ('+String(it.v).padStart(2,'0')+')</span>':'<span class="tag w">não soma</span>';
+      if(picked)tag+=' <small>(você marcou)</small>';
+      html+='<div class="opt-g '+cls+'">'+tag+' '+it.t+'<br><small>'+it.why+'</small></div>';
+    });
+  }
+  else if(q.type==='vf'){
+    var ok=questionCorrect(q);
+    html+='<div style="margin-bottom:6px"><b class="'+(ok?'tag c':'tag w')+'">'+(ok?'✓ Você acertou tudo':'✗ Reveja os itens')+'</b></div>';
+    q.items.forEach(function(it,idx){
+      var exp=it.ans?'V':'F'; var got=(a||{})[idx]||'—';
+      var right=(got===exp);
+      html+='<div class="opt-g '+(right?'correct':'wrongpick')+'"><span class="tag '+(right?'c':'w')+'">'+exp+'</span> '+it.t+' <small>(você: '+got+')</small><br><small>'+it.why+'</small></div>';
+    });
+  }
+  else if(q.type==='disc'){
+    html+='<div style="margin-bottom:6px"><b style="color:var(--amber)">✍ Questão de correção pela mãe</b> — compare com a resposta modelo:</div>';
+    html+='<div class="model"><b>Resposta modelo:</b><br>'+q.model+'</div>';
+    html+='<div class="selfeval">Como você foi? '
+      +'<button class="'+(mem.self['q'+q.n]==='ok'?'sel':'')+'" onclick="setSelf('+q.n+',\'ok\')">✅ Acertei</button>'
+      +'<button class="'+(mem.self['q'+q.n]==='rev'?'sel':'')+'" onclick="setSelf('+q.n+',\'rev\')">🔁 Preciso revisar</button></div>';
+  }
+  g.innerHTML=html; g.classList.add('show');
+}
+window.setSelf=function(n,v){ mem.self['q'+n]=v; save(); Q.forEach(function(q){if(q.n===n)renderGabarito(q);}); };
+
+/* ---------- salvar/exportar ---------- */
+window.doExport=function(){
+  var blob=new Blob([JSON.stringify(mem,null,2)],{type:'application/json'});
+  var a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='simulado_recup_hist8.json'; a.click();
+};
+window.doImport=function(){
+  var inp=document.createElement('input'); inp.type='file'; inp.accept='.json';
+  inp.onchange=function(e){var f=e.target.files[0]; if(!f)return; var rd=new FileReader();
+    rd.onload=function(ev){try{mem=JSON.parse(ev.target.result); save(); location.reload();}catch(err){flash('arquivo inválido');}}; rd.readAsText(f);};
+  inp.click();
+};
+window.doReset=function(){ mem={answers:{},self:{},code:null}; save(); location.reload(); };
+
+})();
+</script>
+</body>
+</html>
