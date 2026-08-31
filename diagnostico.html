@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Diagnóstico das Provas — Arquivo Imperial</title>
+<style>
+  :root{
+    --bg:#0e2418; --bg2:#12321f; --panel:rgba(24,58,40,.62);
+    --gold:#c9a24a; --gold2:#e6cd86; --cream:#f2e8d0; --ink:#e9e0c8;
+    --wax:#9b2d2d; --green:#5fbf7a; --amber:#e0a13a; --yellow:#f0d886;
+    --grid:rgba(201,162,74,.09);
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; font-family:'Segoe UI',system-ui,sans-serif; color:var(--ink);
+    background:
+      linear-gradient(var(--grid) 1px,transparent 1px),
+      linear-gradient(90deg,var(--grid) 1px,transparent 1px),
+      radial-gradient(circle at 20% 8%,#173d28,#0e2418 72%);
+    background-size:34px 34px,34px 34px,100% 100%;
+    line-height:1.6;
+  }
+  .wrap{max-width:960px;margin:0 auto;padding:24px 18px 80px}
+  header.top{
+    border:2px solid var(--gold); border-radius:14px; padding:26px 24px;
+    background:var(--panel); position:relative; overflow:hidden;
+  }
+  header.top::before{
+    content:"ARQUIVO IMPERIAL · DOSSIÊ Nº 08-SJ"; position:absolute; top:10px; right:16px;
+    font-size:11px; letter-spacing:2px; color:var(--gold); opacity:.75;
+    font-family:'Courier New',monospace;
+  }
+  h1{margin:0 0 6px; font-size:1.9rem; color:#fff; letter-spacing:.5px}
+  h1 .sub{display:block;font-size:.95rem;color:var(--gold2);font-weight:normal;letter-spacing:1px;margin-top:4px}
+  .tagline{color:var(--cream);opacity:.9;margin:8px 0 0;font-size:.98rem}
+  .blueprint-tag{font-family:'Courier New',monospace;color:var(--gold);font-size:.85rem}
+  nav.tabs{display:flex;flex-wrap:wrap;gap:10px;margin:22px 0 10px}
+  nav.tabs a{
+    text-decoration:none;color:var(--ink);border:1px solid rgba(201,162,74,.4);
+    padding:8px 14px;border-radius:10px;font-size:.9rem;background:rgba(24,58,40,.5);
+    transition:.15s;
+  }
+  nav.tabs a:hover{border-color:var(--gold);color:#fff;background:rgba(201,162,74,.14)}
+  nav.tabs a.here{border-color:var(--gold2);color:var(--gold2)}
+  h2{
+    color:#fff;font-size:1.35rem;margin:38px 0 14px;padding-bottom:8px;
+    border-bottom:2px dashed rgba(201,162,74,.4);
+  }
+  .card{
+    background:var(--panel);border:1px solid rgba(201,162,74,.3);border-radius:12px;
+    padding:18px 20px;margin:16px 0;
+  }
+  .prova-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:8px}
+  .prova-head h3{margin:0;color:var(--gold2);font-size:1.15rem}
+  .nota{font-family:'Courier New',monospace;font-weight:bold;padding:3px 10px;border-radius:8px;font-size:.95rem}
+  .nota.baixa{background:rgba(155,45,45,.28);color:#e59a9a;border:1px solid var(--wax)}
+  .nota.media{background:rgba(224,161,58,.22);color:var(--amber);border:1px solid var(--amber)}
+  table{width:100%;border-collapse:collapse;margin:14px 0 4px;font-size:.92rem}
+  th,td{text-align:left;padding:9px 10px;border-bottom:1px solid rgba(201,162,74,.2);vertical-align:top}
+  th{color:var(--gold2);font-size:.8rem;text-transform:uppercase;letter-spacing:1px}
+  td.q{font-family:'Courier New',monospace;color:var(--gold2);white-space:nowrap;font-weight:bold}
+  .res{font-weight:bold;white-space:nowrap}
+  .res.ok{color:var(--green)}
+  .res.x{color:#e07a7a}
+  .res.p{color:var(--yellow)}
+  .legenda{font-size:.85rem;color:var(--cream);opacity:.9;margin-top:10px}
+  .fraco{
+    border-left:5px solid var(--wax);background:rgba(155,45,45,.1);
+    border-radius:0 12px 12px 0;padding:16px 20px;margin:16px 0;
+  }
+  .fraco.med{border-left-color:var(--amber);background:rgba(224,161,58,.1)}
+  .fraco.leve{border-left-color:var(--yellow);background:rgba(240,216,134,.08)}
+  .selo{
+    display:inline-block;font-size:.72rem;font-weight:bold;letter-spacing:1px;
+    padding:3px 9px;border-radius:20px;margin-bottom:6px;font-family:'Courier New',monospace;
+  }
+  .selo.r{background:var(--wax);color:#ffe0e0}
+  .selo.a{background:var(--amber);color:#3a2400}
+  .selo.y{background:var(--yellow);color:#3a3000}
+  .fraco h3{margin:6px 0 8px;color:#fff;font-size:1.08rem}
+  .fraco p{margin:6px 0}
+  .ex{font-style:italic;color:var(--cream);background:rgba(0,0,0,.2);padding:8px 12px;border-radius:8px;margin:8px 0;font-size:.9rem}
+  .footer{margin-top:40px;text-align:center;font-size:.82rem;color:var(--gold);opacity:.75;font-family:'Courier New',monospace}
+  b.hl{color:var(--gold2)}
+  ul{margin:8px 0 8px 0;padding-left:22px}
+  li{margin:5px 0}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <h1>Diagnóstico das Provas
+      <span class="sub">🏛️ ARQUIVO IMPERIAL · Kit de Recuperação de História</span>
+    </h1>
+    <p class="tagline">Antes de restaurar um documento antigo, o arquivista estuda onde ele está gasto. Aqui está o que cada prova mostrou — o que já está firme e o que precisa de reforço.</p>
+    <p class="blueprint-tag">// História (Independência e Primeiro Reinado) · 8º ano · Colégio São José · Aluno: jovem aprendiz</p>
+  </header>
+
+  <nav class="tabs">
+    <a href="index.html">🏛️ Início</a>
+    <a href="diagnostico.html" class="here">🔎 Diagnóstico</a>
+    <a href="resumo.html">📜 Resumo de Revisão</a>
+    <a href="simulado.html">✒️ Simulado</a>
+  </nav>
+
+  <p class="legenda">Legenda: <span class="res ok">✓ Acertou</span> &nbsp; <span class="res x">✗ Errou</span> &nbsp; <span class="res p">◐ Parcial</span> (acertou parte — típico das discursivas, em que faltou completar a resposta).</p>
+
+  <h2>1. O que caiu em cada prova (questão por questão)</h2>
+
+  <!-- PROVA 2 (mais antiga) -->
+  <div class="card">
+    <div class="prova-head">
+      <h3>📄 Prova 1 — Colônia: Conjuração, Pernambucana, Vinda da Corte</h3>
+      <span class="nota media">Nota ~5,2 · peso 10,0 · 09/06/2026</span>
+    </div>
+    <table>
+      <tr><th>Questão</th><th>Tema</th><th>Resultado</th></tr>
+      <tr><td class="q">1</td><td>Conjuração Mineira — causas (assinale a <b>incorreta</b>)</td><td class="res ok">✓</td></tr>
+      <tr><td class="q">2</td><td>Medidas da Coroa que geraram insatisfação — a <b>derrama</b></td><td class="res ok">✓</td></tr>
+      <tr><td class="q">3</td><td>Ideias iluministas na Conjuração — defesa da independência e liberdade econômica</td><td class="res ok">✓</td></tr>
+      <tr><td class="q">4</td><td>Composição social da Conjuração (assinale a <b>incorreta</b>)</td><td class="res ok">✓</td></tr>
+      <tr><td class="q">5</td><td>Discursiva — como a Conjuração foi <b>reprimida</b></td><td class="res p">◐</td></tr>
+      <tr><td class="q">6</td><td>Revolução Pernambucana — causas (assinale a <b>incorreta</b>)</td><td class="res ok">✓</td></tr>
+      <tr><td class="q">7</td><td>Duração da Revolução Pernambucana (marcou "independência definitiva"; era "<b>derrotada em 1817</b>")</td><td class="res x">✗</td></tr>
+      <tr><td class="q">8</td><td>Discursiva — <b>motivos da vinda da corte</b> (respondeu "preservar produção"; era fugir de Napoleão)</td><td class="res x">✗</td></tr>
+      <tr><td class="q">9</td><td>Discursiva — mudanças econômicas após a chegada de D. João VI (faltou a <b>abertura dos portos</b>)</td><td class="res x">✗</td></tr>
+      <tr><td class="q">10</td><td>Tratado de 1810 — imposto (marcou 12%; era <b>15%</b>)</td><td class="res x">✗</td></tr>
+    </table>
+    <p class="legenda">📌 Prova mais fraca. A <b>vinda da corte</b> (por quê veio e o que mudou) e o <b>desfecho das revoltas</b> foram os maiores tropeços.</p>
+  </div>
+
+  <!-- PROVA 1 (mais recente) -->
+  <div class="card">
+    <div class="prova-head">
+      <h3>📄 Prova 2 — Independência e Primeiro Reinado</h3>
+      <span class="nota media">Nota ~7,5 · peso 10,0 · 14/08/2026</span>
+    </div>
+    <table>
+      <tr><th>Questão</th><th>Tema</th><th>Resultado</th></tr>
+      <tr><td class="q">1</td><td>Discursiva — <b>Guerra da Cisplatina</b> (o que foi + países envolvidos)</td><td class="res p">◐</td></tr>
+      <tr><td class="q">2</td><td>Confederação do Equador — causa (centralização da Constituição de 1824 / república federalista)</td><td class="res ok">✓</td></tr>
+      <tr><td class="q">3</td><td>Fatores da <b>Abdicação</b> de D. Pedro I (assinale a <b>incorreta</b> — marcou uma verdadeira)</td><td class="res x">✗</td></tr>
+      <tr><td class="q">4</td><td>Líbero Badaró — símbolo da repressão</td><td class="res ok">✓</td></tr>
+      <tr><td class="q">5</td><td>Noite das Garrafadas — conflitos portugueses × brasileiros</td><td class="res ok">✓</td></tr>
+      <tr><td class="q">6</td><td>Discursiva — objetivos da <b>Revolução Liberal do Porto</b> (1820)</td><td class="res p">◐</td></tr>
+      <tr><td class="q">7</td><td>Dia do Fico (D. Pedro permanece no Brasil, 1822)</td><td class="res ok">✓</td></tr>
+      <tr><td class="q">8</td><td>7 de setembro de 1822 — consequência (separação de Portugal)</td><td class="res ok">✓</td></tr>
+      <tr><td class="q">9</td><td>Discursiva — <b>reconhecimento externo</b> (EUA, Inglaterra, Portugal)</td><td class="res p">◐</td></tr>
+      <tr><td class="q">10</td><td>Constituição de 1824 — Poder Moderador / centralização</td><td class="res ok">✓</td></tr>
+    </table>
+    <p class="legenda">📌 Nota melhor: as questões de <b>múltipla escolha</b> do Primeiro Reinado já vão bem. Escorrega nas <b>discursivas</b> (falta fechar a resposta) e na <b>pegadinha do "incorreta"</b> (Q3).</p>
+  </div>
+
+  <h2>2. Pontos fracos identificados (do mais grave ao mais leve)</h2>
+  <p style="color:var(--cream);opacity:.9">O reforço do kit vai concentrar aqui. Quanto mais vermelho o selo, mais atenção o tema precisa.</p>
+
+  <div class="fraco">
+    <span class="selo r">PRIORIDADE MÁXIMA</span>
+    <h3>1. Vinda da corte (1808): <b class="hl">por que veio</b> e <b class="hl">o que mudou</b> (abertura dos portos)</h3>
+    <p>Foi o erro <b>mais grave</b>: errou <b>duas questões seguidas</b> sobre o mesmo tema na Prova 1 (Q8 e Q9). Confundiu o motivo da vinda ("preservar a produção") com o motivo real: <b>fugir da invasão de Napoleão</b>. E, na mudança econômica, não citou a <b>Abertura dos Portos</b>.</p>
+    <div class="ex">Da própria prova: na discursiva sobre a vinda da corte, respondeu "para preservar como estava indo a produção de café, ouro, açúcar". O certo: a corte <b>fugiu de Napoleão</b>, e a grande mudança econômica foi a <b>abertura dos portos</b> em 1808.</div>
+  </div>
+
+  <div class="fraco">
+    <span class="selo r">PRIORIDADE MÁXIMA</span>
+    <h3>2. As revoltas foram <b class="hl">DERROTADAS</b> (não venceram)</h3>
+    <p>Aparece em mais de um lugar: na Prova 1 (Q7) marcou que "Pernambuco tornou-se independente" — mas a Revolução Pernambucana foi <b>rapidamente derrotada em 1817</b>. É um padrão: confunde "a revolta aconteceu" com "a revolta venceu".</p>
+    <div class="ex">Regra de ouro: Conjuração Mineira (descoberta e reprimida, Tiradentes enforcado) e Revolução Pernambucana (derrotada em 1817) <b>não deram certo</b>. Quem só conseguiu a independência de verdade foi o Brasil, em 1822.</div>
+  </div>
+
+  <div class="fraco med">
+    <span class="selo a">REFORÇAR</span>
+    <h3>3. <b class="hl">Discursivas</b> — escrever a resposta completa</h3>
+    <p>Nas duas provas perdeu ponto em discursivas (Cisplatina, Revolução Liberal do Porto, reconhecimento externo, repressão da Conjuração). Sabe pedaços do assunto, mas a resposta fica <b>curta ou pela metade</b> — e a professora desconta.</p>
+    <div class="ex">Dica: toda discursiva pede pelo menos <b>3 partes</b> — o que foi + quem participou + como terminou (ou a consequência). O Resumo traz respostas-modelo dessas questões.</div>
+  </div>
+
+  <div class="fraco med">
+    <span class="selo a">REFORÇAR</span>
+    <h3>4. <b class="hl">Datas e números</b> que caem (ex.: Tratado de 1810)</h3>
+    <p>Na Prova 1 (Q10) marcou 12% em vez de <b>15%</b> no Tratado de 1810. São detalhes que valem ponto inteiro em múltipla escolha. Vale memorizar as datas-chave.</p>
+  </div>
+
+  <div class="fraco leve">
+    <span class="selo y">AJUSTE FINO</span>
+    <h3>5. Pegadinha do <b class="hl">"assinale a INCORRETA"</b></h3>
+    <p>Na Prova 2 acertou as três questões de "incorreta"; na Prova 1 (Q3) escorregou e marcou uma alternativa <b>verdadeira</b>. É só atenção: nessas questões, a resposta certa é a frase <b>FALSA</b>.</p>
+  </div>
+
+  <div class="fraco leve">
+    <span class="selo y">AJUSTE FINO</span>
+    <h3>6. Fatores da <b class="hl">Abdicação</b> de D. Pedro I (1831)</h3>
+    <p>Ligado ao erro da Q3. Vale fixar os motivos reais: crise econômica, oposição crescente e o desgaste da Guerra da Cisplatina — e lembrar que o apoio popular <b>caiu</b>, não aumentou.</p>
+  </div>
+
+  <div class="footer">// fim do dossiê diagnóstico · próximo passo: 📜 Resumo de Revisão →</div>
+
+</div>
+</body>
+</html>
